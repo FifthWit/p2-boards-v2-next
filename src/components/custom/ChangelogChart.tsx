@@ -2,7 +2,7 @@
 
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-import useResize from "@/lib/useResize"
+import { cn } from "@/lib/utils"
 
 import {
   Card,
@@ -28,6 +28,7 @@ interface ScoreData {
 
 interface ChangeProps {
   chartData: ScoreData[]
+  className?: string
 }
 
 const chartConfig = {
@@ -37,17 +38,16 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export default function Change({ chartData }: ChangeProps) {
-  const dimensions = useResize();
+export default function Change({ chartData, className }: ChangeProps) {
   return (
-    <Card className="min-h-[450px]">
+    <Card className={cn("min-h-[450px] w-full", className)}>
       <CardHeader>
         <CardTitle>Recent Runs</CardTitle>
         <CardDescription>Runs in the past week</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[400px] w-full">
-          <BarChart accessibilityLayer data={chartData} width={dimensions.width} height={400} >
+          <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="day"
