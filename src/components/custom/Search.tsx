@@ -17,16 +17,6 @@ import { p2map, p2mapdata } from '@/lib/p2data';
 import { MonitorPlay } from 'lucide-react';
 
 export default function MapSearch() {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-
-  const filterMaps = (searchTerm: string) => {
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    return p2mapdata.filter(map =>
-      map.BSP.toLowerCase().includes(lowerSearchTerm) ||
-      map.Name.toLowerCase().includes(lowerSearchTerm)
-    ).slice(0, 15);
-  };
 
   return (
     <Card>
