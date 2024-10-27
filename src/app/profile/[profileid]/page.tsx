@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import Change from "@/components/custom/ChangelogChart";
 import { Twitch } from 'lucide-react';
 import AggregateScores from "./AggregateScores";
+import Image from "next/image";
 
 interface ScoreData {
     day: string;
@@ -76,7 +77,7 @@ export default async function Profile({ params }: { params: Promise<ProfileParam
     <div>
       <div className="flex flex-row w-full *:w-1/3">
         <div className="flex flex-row items-center *:m-2">
-          <img src={profileData?.avatar ?? ""} alt="" className="rounded-full" />
+          <Image src={profileData?.avatar ?? ""} alt="" className="rounded-full" width={64} height={64} />
           <div className="flex flex-col">
             <h4 className="text-4xl font-semibold">{profileData?.boardname}</h4>
             <p className="text-muted-foreground">ProfileID: {profileData?.id}</p>

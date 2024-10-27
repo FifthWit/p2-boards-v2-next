@@ -2,6 +2,7 @@
 import { idToLevel, scoreToTime } from "@/lib/utils";
 import { MonitorPlay } from "lucide-react";
 import Link from "next/link"
+import Image from "next/image";
 
 export interface ScoreProps {
   id: number;
@@ -33,7 +34,9 @@ export default function Score({ level, userDataId, scoreData, userData }: ScoreP
   return (
     <div className="w-full p-2 border border-muted m-1 rounded-lg grid grid-cols-3 gap-2 items-center">
       <div className="col-span-1 flex items-center">
-        <img 
+        <Image
+          width={64}
+          height={64}
           src={userData.avatar} 
           alt={`${userData.boardname}'s avatar`} 
           className="w-16 aspect-square rounded-full"
