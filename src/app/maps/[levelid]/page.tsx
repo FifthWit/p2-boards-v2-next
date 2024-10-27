@@ -6,9 +6,9 @@ import Image from "next/image";
 const prisma = new PrismaClient();
 
 interface Props {
-  params: {
+  params: Promise<{
     levelid: string;
-  };
+  }>;
 }
 
 export default async function Page({ params }: Props) {
