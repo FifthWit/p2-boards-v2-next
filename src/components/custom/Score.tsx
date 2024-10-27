@@ -29,9 +29,10 @@ export interface ScoreProps {
     avatar: string;
   };
   hideLink?: boolean
+  hideMap?: boolean
 }
 
-export default function Score({ level, userDataId, scoreData, userData, hideLink = false}: ScoreProps) {
+export default function Score({ level, userDataId, scoreData, userData, hideLink = false, hideMap = false}: ScoreProps) {
   return (
     <div className="w-full p-2 border border-muted m-1 rounded-lg grid grid-cols-3 gap-2 items-center">
       <div className="col-span-1 flex items-center">
@@ -45,10 +46,12 @@ export default function Score({ level, userDataId, scoreData, userData, hideLink
         <Link className="ml-4 font-semibold truncate underline underline-offset-2" href={`/profile/${userDataId}`}>{userData.boardname}</Link>
       </div>
       <div className="col-span-2 grid grid-cols-5 gap-2 items-center">
-            {hideLink ? (
-            <span>{idToLevel(level)?.Name}</span>
-            ) : (
-            <Link href={`/maps/${level}`}>{idToLevel(level)?.Name}</Link>
+            {!hideMap && (
+              hideLink ? (
+                <span>{idToLevel(level)?.Name}</span>
+              ) : (
+                <Link href={`/maps/${level}`}>{idToLevel(level)?.Name}</Link>
+              )
             )}
           <span>{scoreToTime(scoreData.score)}</span>
           <span>Rank: <strong>{scoreData.playerRank}</strong></span>

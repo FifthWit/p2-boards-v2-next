@@ -57,7 +57,7 @@ export default async function Page({ params }: Props) {
               </Link>
             )}
         </div>
-        <ListScores scores={scores} hideLink={true}/>
+        <ListScores scores={scores} hideLink={true} hideMap={true}/>
         </div>
     </div>
   );
