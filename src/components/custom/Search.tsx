@@ -1,9 +1,8 @@
 "use client"
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Command,
-    CommandDialog,
     CommandEmpty,
     CommandGroup,
     CommandInput,
@@ -13,8 +12,7 @@ import {
     CommandShortcut,
   } from "@/components/ui/command"
 import { Card } from '@/components/ui/card';
-import { p2map, p2mapdata } from '@/lib/p2data';
-import { MonitorPlay } from 'lucide-react';
+import { p2mapdata } from '@/lib/p2data';
 
 export default function MapSearch() {
 

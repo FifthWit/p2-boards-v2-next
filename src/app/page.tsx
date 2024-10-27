@@ -1,6 +1,5 @@
 
 import { PrismaClient } from '@prisma/client';
-import Score from '@/components/custom/Score';
 import ChangelogChart from "@/components/custom/ChangelogChart";
 import ListScores from '@/components/custom/ListScores';
 

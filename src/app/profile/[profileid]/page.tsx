@@ -1,7 +1,5 @@
-import ListScores from "@/components/custom/ListScores";
 import { PrismaClient } from "@prisma/client";
 import Change from "@/components/custom/ChangelogChart";
-import Link from "next/link";
 import { Twitch } from 'lucide-react';
 import AggregateScores from "./AggregateScores";
 

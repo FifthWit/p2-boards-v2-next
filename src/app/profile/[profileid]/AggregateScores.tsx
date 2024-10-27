@@ -114,7 +114,7 @@ export default async function AggregateScores({ id }: { id: number }) {
           level: true
         }
       });
-      let totalScores = {
+      const totalScores = {
         SP: 0,
         Overall: 0,
         MP: 0,

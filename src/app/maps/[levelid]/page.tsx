@@ -1,7 +1,6 @@
 import { idToLevel } from "@/lib/utils";
 import ListScores from "@/components/custom/ListScores";
 import { PrismaClient } from "@prisma/client";
-import Link from "next/link";
 
 const prisma = new PrismaClient();
 

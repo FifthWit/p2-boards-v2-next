@@ -1,7 +1,6 @@
 "use client"
 import { idToLevel, scoreToTime } from "@/lib/utils";
 import { MonitorPlay } from "lucide-react";
-import { useEffect } from "react";
 import Link from "next/link"
 
 export interface ScoreProps {
@@ -30,7 +29,7 @@ export interface ScoreProps {
   };
 }
 
-export default function Score({ id, level, scoreDataId, userDataId, scoreData, userData }: ScoreProps) {
+export default function Score({ level, userDataId, scoreData, userData }: ScoreProps) {
   return (
     <div className="w-full p-2 border border-muted m-1 rounded-lg grid grid-cols-3 gap-2 items-center">
       <div className="col-span-1 flex items-center">
