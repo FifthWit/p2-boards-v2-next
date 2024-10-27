@@ -1,12 +1,12 @@
 {
     "version": 2,
-    "buildCommand": "prisma generate && next build",
-    "outputDirectory": ".next",
-    "framework": "nextjs",
-    "routes": [
+    "builds": [
       {
-        "src": "/(.*)",
-        "dest": "/"
+        "src": "next.config.js",
+        "use": "@vercel/next"
       }
+    ],
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/" }
     ]
   }
