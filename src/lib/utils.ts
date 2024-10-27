@@ -6,6 +6,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function rankToPoints(rank: number): number {
+  const base = 200 - (rank - 1);
+  return Math.max(1, (base * base) / 200);
+}
+
 export function scoreToTime(score: number): string {
   const scoreStr = score.toString().padStart(4, '0');
   const decimalPart = scoreStr.slice(-2);
