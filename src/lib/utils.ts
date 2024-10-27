@@ -27,7 +27,7 @@ export function scoreToTime(score: number): string {
   }
 }
 
-export function idToLevel(id: number): p2map | null{
+export function idToLevel(id: number | string): p2map | null{
   let level: p2map | null = null;
 
   for (let i = 0; i < p2mapdata.length; i++){

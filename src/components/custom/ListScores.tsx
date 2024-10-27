@@ -4,7 +4,7 @@ import anime from 'animejs'
 import Score from '@/components/custom/Score';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export default function ListScores({ scores }: any) {
+export default function ListScores({ scores, hideLink }: any) {
     useEffect(() => {
         anime({
           targets: '.score',
@@ -20,6 +20,7 @@ export default function ListScores({ scores }: any) {
         <div>
         {scores.map((run: any) => (
           <Score
+          hideLink={hideLink}
             key={run.id}
             id={run.id}
             level={run.level}
