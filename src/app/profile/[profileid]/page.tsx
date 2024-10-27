@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import Change from "@/components/custom/ChangelogChart";
 import Link from "next/link";
 import { Twitch } from 'lucide-react';
+import AggregateScores from "./AggregateScores";
 
 interface ScoreData {
     day: string
@@ -11,13 +12,13 @@ interface ScoreData {
 
 const prisma = new PrismaClient();
 
-const fetchChartData = async (profileId: number): Promise<ScoreData[]> => {
+const fetchChartData = async (profileId: {id: number}): Promise<ScoreData[]> => {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   const runs = await prisma.run.findMany({
     where: {
-      userDataId: profileId,
+      userDataId: profileId.id,
       scoreData: {
         date: {
           gte: sevenDaysAgo,
@@ -27,10 +28,12 @@ const fetchChartData = async (profileId: number): Promise<ScoreData[]> => {
     include: {
       scoreData: true,
     },
-  }); console.log(runs)
+  });
 
   const aggregatedData = runs.reduce((acc, run) => {
-    const day = run.scoreData.date?.toLocaleDateString('en-US', { weekday: 'long' });
+    const date = run.scoreData.date;
+    if (!date) return acc;
+    const day = date.toLocaleDateString('en-US', { weekday: 'long' });
     if (!acc[day]) {
       acc[day] = { day, Submission: 0 };
     }
@@ -41,7 +44,11 @@ const fetchChartData = async (profileId: number): Promise<ScoreData[]> => {
   return Object.values(aggregatedData);
 };
 
-export default async function Profile({ params }) {
+interface ProfileParams {
+  profileid: string;
+}
+
+export default async function Profile({ params }: { params: ProfileParams }) {
   const profile = await params;
   const profileId = parseInt(profile.profileid);
 
@@ -57,7 +64,7 @@ export default async function Profile({ params }) {
     },
   });
 
-  if (!profileRuns || profileRuns.length === 0) {
+  if (!profileRuns) {
     return (
       <div>
         <p>Profile data not found.</p>
@@ -65,12 +72,12 @@ export default async function Profile({ params }) {
     );
   }
 
-  const chartData = await fetchChartData(profileId);
+  const chartData = await fetchChartData({ id: profileId });
 
   return (
     <div>
-      <div className="flex flex-row w-full justify-between">
-        <div className="flex flex-row items-center *:m-2 w-fit">
+      <div className="flex flex-row w-full *:w-1/3">
+        <div className="flex flex-row items-center *:m-2">
           <img src={profileData?.avatar ?? ""} alt="" className="rounded-full" />
           <div className="flex flex-col">
             <h4 className="text-4xl font-semibold">{profileData?.boardname}</h4>
@@ -84,25 +91,12 @@ export default async function Profile({ params }) {
             </div>
           </div>
         </div>
-        {/* Havent added actual data fetching for this yet so this more or less a copy of RealCreative's points as of 10/25/24 */}
-        <div className="grid grid-rows-2 gap-2 text-center">
-            <div className="grid grid-cols-3 gap-2">
-                <div className="w-20">Best SP Rank 2nd on many chambers</div>
-                <div className="w-20">Best Rank 1st on many chambers</div>
-                <div className="w-20">Best Coop Rank 1st on many chambers</div>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-                <div className="w-20">SP Points <strong className="text-red-500">11561</strong></div>
-                <div className="w-20">Overall Points <strong className="text-red-500">20613</strong></div>
-                <div className="w-20">Coop Points <strong className="text-blue-500">9457</strong></div>
-            </div>
-        </div>
-        <Change chartData={chartData} />
+            
+          <AggregateScores id={profileId} />
+
+        <Change chartData={chartData} className="w-1/3" />
       </div>
       scores would be below
-
-
-      {/* <h1>Map Profile: {JSON.stringify(profileData)}</h1> */}
     </div>
   );
 }
