@@ -30,7 +30,7 @@ export interface ScoreProps {
   };
 }
 
-export default function Score({ id, level, scoreDataId, userDataId, scoreData, userData }) {
+export default function Score({ id, level, scoreDataId, userDataId, scoreData, userData }: ScoreProps) {
   return (
     <div className="w-full p-2 border border-muted m-1 rounded-lg grid grid-cols-3 gap-2 items-center">
       <div className="col-span-1 flex items-center">
@@ -39,7 +39,7 @@ export default function Score({ id, level, scoreDataId, userDataId, scoreData, u
           alt={`${userData.boardname}'s avatar`} 
           className="w-16 aspect-square rounded-full"
         />
-        <span className="ml-4 font-semibold truncate">{userData.boardname}</span>
+        <Link className="ml-4 font-semibold truncate underline underline-offset-2" href={`/profile/${userDataId}`}>{userData.boardname}</Link>
       </div>
       <div className="col-span-2 grid grid-cols-5 gap-2 items-center">
           <span>{idToLevel(level)?.Name}</span>
