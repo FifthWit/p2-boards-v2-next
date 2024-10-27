@@ -52,7 +52,7 @@ export default async function Page({ params }: Props) {
             <h1 className="text-white text-7xl font-bold">{levelData.Name}</h1>
           </div>
             {idToLevel(levelid)?.Name && (
-              <Link href={`https://wiki.portal2.sr/${idToLevel(levelid).Name.replace(/ /g, '_')}`} className="absolute bottom-0 left-0 m-4 text-lg bg-background px-4 p-0.5 text-center rounded-lg">
+              <Link href={`https://wiki.portal2.sr/${idToLevel(levelid)?.Name.replace(/ /g, '_')}`} className="absolute bottom-0 left-0 m-4 text-lg bg-background px-4 p-0.5 text-center rounded-lg">
                 Wiki
               </Link>
             )}
