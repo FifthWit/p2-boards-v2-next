@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import anime from 'animejs'
 import Score from '@/components/custom/Score';
 
-export default function ListScores({ scores }){
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export default function ListScores({ scores }: any) {
     useEffect(() => {
         anime({
           targets: '.score',
@@ -17,7 +18,7 @@ export default function ListScores({ scores }){
     
       return (
         <div>
-        {scores.map(run => (
+        {scores.map((run: any) => (
           <Score
             key={run.id}
             id={run.id}
@@ -28,6 +29,7 @@ export default function ListScores({ scores }){
             userData={run.userData}
           />
         ))}
-      </div>
+        </div>
       );
-    };
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */

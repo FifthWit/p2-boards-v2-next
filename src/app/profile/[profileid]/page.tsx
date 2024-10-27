@@ -4,13 +4,13 @@ import { Twitch } from 'lucide-react';
 import AggregateScores from "./AggregateScores";
 
 interface ScoreData {
-    day: string
-    Submission: number
+    day: string;
+    Submission: number;
 }
 
 const prisma = new PrismaClient();
 
-const fetchChartData = async (profileId: {id: number}): Promise<ScoreData[]> => {
+const fetchChartData = async (profileId: { id: number }): Promise<ScoreData[]> => {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -46,7 +46,7 @@ interface ProfileParams {
   profileid: string;
 }
 
-export default async function Profile({ params }: { params: ProfileParams }) {
+export default async function Profile({ params }: { params: Promise<ProfileParams> }) {
   const profile = await params;
   const profileId = parseInt(profile.profileid);
 
