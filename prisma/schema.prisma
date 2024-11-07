@@ -2,48 +2,92 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// UNCOMMENT IF DEVELOPING ON LOCAL PG SERVER
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-  
-// }
-// below is from Vercel
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "mysql"
+  url      = env("MYSQL_DATABASE_URL")
 }
 
-model Run {
-  id         Int       @id @default(autoincrement())
-  scoreData  ScoreData @relation(fields: [scoreDataId], references: [id])
-  userData   UserData  @relation(fields: [userDataId], references: [id])
-  level      Int
-  scoreDataId Int
-  userDataId  Int
-}
-
-model ScoreData {
+model Changelog {
   id           Int      @id @default(autoincrement())
-  note         String?
-  submission   Int
-  changelogId  Int
-  playerRank   Int
-  scoreRank    Int
+  time_gained  DateTime? @default(now())
+  profile_number String  @default("")
   score        Int
-  date         DateTime?
-  hasDemo      Boolean
-  youtubeID    String?
-  pending      Boolean
-  autorender_id String?
-  runs         Run[]
+  map_id       String   @default("")
+  wr_gain      Int      @default(0)
+  has_demo     Int?     @default(0)
+  banned       Int      @default(0)
+  youtube_id   String? 
+  previous_id  Int? 
+  post_rank    Int? 
+  pre_rank     Int? 
+  submission   Int      @default(0)
+  note         String? 
+  pending      Boolean  @default(false)
+
+  @@index([profile_number])
+  @@index([map_id])
+  @@index([previous_id])
 }
 
+model Chapters {
+  id            Int      @id @default(autoincrement())
+  chapter_name  String? 
+  is_multiplayer Int     @default(0)
+}
 
-model UserData {
-  id       Int    @id @default(autoincrement())
-  boardname String @unique
-  avatar   String?
-  runs      Run[] 
+model EvidenceRequirements {
+  id             Int      @id @default(autoincrement())
+  rank           Int
+  demo           Boolean
+  video          Boolean
+  active         Boolean
+  timestamp      DateTime
+  closed_timestamp DateTime?
+}
+
+model Exceptions {
+  map_id      String
+  legit_score Int
+  curl        Int      @default(18)
+
+  @@id([map_id, legit_score, curl])
+}
+
+model Maps {
+  id         Int      @id
+  steam_id   String   @unique @default("")
+  lp_id      String
+  name       String?
+  type       String   @default("time")
+  chapter_id Int?
+  is_coop    Int      @default(0)
+  is_public  Int      @default(1)
+
+  @@index([chapter_id])
+  @@index([is_public])
+}
+
+model Scores {
+  changelog_id  Int      @id
+  profile_number String
+  map_id        String
+
+  @@unique([profile_number, map_id])
+  @@index([map_id])
+  @@index([profile_number])
+}
+
+model UsersNew {
+  profile_number  String   @id
+  boardname       String?
+  steamname       String?
+  banned          Int      @default(0)
+  registered      Int      @default(0)
+  avatar          String?
+  twitch          String?
+  youtube         String?
+  title           String?
+  admin           Int      @default(0)
+  donation_amount String?
+  auth_hash       String?
 }

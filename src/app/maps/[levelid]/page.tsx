@@ -3,37 +3,93 @@ import ListScores from "@/components/custom/ListScores";
 import { PrismaClient } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-
 const prisma = new PrismaClient();
-
 interface Props {
   params: Promise<{
     levelid: string;
   }>;
 }
-
 export default async function Page({ params }: Props) {
   const { levelid } = await params;
   const levelData = idToLevel(parseInt(levelid));
   
-  const scores = await prisma.run.findMany({
-    where: { level: parseInt(levelid) },
-    take: 40,
-    include: {
-      scoreData: true,
-      userData: true
-    }
-  });
+  async function getScores(levelid: string) {
+    // Fetch scores from changelog
+    const scores = await prisma.changelog.findMany({
+      where: {
+        map_id: levelid,
+        score: {
+          not: undefined
+        },
+        post_rank: {
+          not: null
+        },
+        pending: false,
+        banned: 0
+      },
+      orderBy: {
+        score: 'asc'
+      },
+      distinct: ['profile_number'],
+    });
+  
+    // Extract profile numbers from the scores
+    const profileNumbers = scores.map(score => score.profile_number);
+  
+    // Fetch corresponding user data
+    const userData = await prisma.usersNew.findMany({
+      where: {
+        profile_number: {
+          in: profileNumbers
+        },
+        banned: 0
+      }
+    });
+  
+    // Create a map of user data for easy access
+    const userDataMap = userData.reduce((acc, user) => {
+      acc[user.profile_number] = user;
+      return acc;
+    }, {} as Record<string, typeof userData[0]>);
+  
+    // Filter out scores where the user is banned or not found
+    const filteredScores = scores.filter(score => userDataMap[score.profile_number]);
+    
+    // Calculate ranks properly
+    let position = 0;
+    
+    const scoresWithUserData = filteredScores.map((score, index) => {
+      // If this is the first score or if it's different from the previous score
+      if (index === 0 || score.score !== filteredScores[index - 1].score) {
+        position = index + 1;
+      }
+      
+      return {
+        ...score,
+        currentRank: position,
+        score: score.score,
+        userData: userDataMap[score.profile_number]
+      };
+    });
+
+    // Remove scores with rank above 500
+    const finalScores = scoresWithUserData.filter(score => score.currentRank <= 500);
+  
+    return finalScores;
+}
+
+  const scores = await getScores(levelid);
 
   if (!levelData) {
     return (
       <div>
-        <h1>Map Level: {levelid}</h1>
-        <p>Level data not found.</p>
+        <>
+          <h1>Map Level: {levelid}</h1>
+          <p>Level data not found.</p>
+        </>
       </div>
     );
   }
-
   return (
     <div className="w-full flex justify-center">
         <div className="w-4/5 flex flex-col justify-center items-center">
@@ -57,6 +113,7 @@ export default async function Page({ params }: Props) {
               </Link>
             )}
         </div>
+        {/* {JSON.stringify(scores)} */}
         <ListScores scores={scores} hideLink={true} hideMap={true}/>
         </div>
     </div>

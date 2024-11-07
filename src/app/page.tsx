@@ -1,23 +1,38 @@
-
 import { PrismaClient } from '@prisma/client';
 import ChangelogChart from "@/components/custom/ChangelogChart";
 import ListScores from '@/components/custom/ListScores';
 
 const prisma = new PrismaClient();
 
-const runs = await prisma.run.findMany({
-  where: { scoreData: { playerRank: 1 } },
-  take: 20,
-  orderBy: {
-    scoreData: {
-      date: 'desc'
+async function getRuns() {
+  const runs = await prisma.changelog.findMany({
+    take: 20,
+    orderBy: {
+      time_gained: 'desc'
     }
-  },
-  include: {
-    scoreData: true,
-    userData: true
-  }
-});
+  });
+
+  const profileNumbers = runs.map(run => run.profile_number);
+  const userData = await prisma.usersNew.findMany({
+    where: {
+      profile_number: {
+        in: profileNumbers
+      }
+    }
+  });
+
+  const userDataMap = userData.reduce((acc: { [key: string]: typeof userData[0] }, user) => {
+    acc[user.profile_number] = user;
+    return acc;
+  }, {});
+
+  const runsWithUserData = runs.map(run => ({
+    ...run,
+    userData: userDataMap[run.profile_number]
+  }));
+
+  return runsWithUserData;
+}
 
 const chartData = [
   { day: "Monday", Submission: 186 },
@@ -26,14 +41,16 @@ const chartData = [
   { day: "Thursday", Submission: 73 },
   { day: "Friday", Submission: 209 },
   { day: "Saturday", Submission: 214 },
-  { day: "Sunday", Submission: 520}
-]
+  { day: "Sunday", Submission: 520 }
+];
 
-export default function Page() {
+export default async function Page() {
+  const runsWithUserData = await getRuns();
   return (
     <>
       <ChangelogChart chartData={chartData} />
-      <ListScores scores={runs} />
+      {/* <p>{JSON.stringify(runsWithUserData)}</p> */}
+      <ListScores scores={runsWithUserData} />
     </>
   );
 }
