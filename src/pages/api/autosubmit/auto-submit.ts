@@ -24,7 +24,7 @@ export const config = {
 
 async function saveDemo(demo: File) {
     console.log(demo.type);
-    // totally awesome feature to submit to db, atm I havent worked on how to store it so Ima work on this later <3
+    // totally awesome feature to submit to db, atm I havent worked on how to store it so Ima work on this later <3 I put type as just a placeholder so the ts compiler doesn't prevent builds
     return;
 }
 
